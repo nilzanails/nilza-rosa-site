@@ -3,7 +3,7 @@
 
   /* ---------- Configuração do salão ---------- */
   const CONFIG = {
-    whatsapp: '',        // PENDENTE: número com DDI, ex. 5511999999999
+    whatsapp: '5511960732569',
     profissional: '',
     abre: 9,             // PROVISÓRIO: confirmar horário de atendimento
     fecha: 18,
@@ -382,8 +382,7 @@
   }
 
   // Links do rodapé
-  const wa = $('#foot-wa');
-  if (CONFIG.whatsapp) wa.href = whatsappUrl('Olá! Gostaria de agendar um horário.');
+  $('#foot-wa').href = whatsappUrl('Olá! Gostaria de agendar um horário.');
 
   render();
 })();
