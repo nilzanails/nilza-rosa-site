@@ -7,7 +7,7 @@
     profissional: '',
     abre: 7,             // segunda a sábado, das 7:00 às 19:30
     fecha: 19.5,
-    intervaloMin: 30,
+    intervaloMin: 60,
     diasFechados: [0],   // 0 = domingo (sem atendimento)
     mesesAFrente: 2,
   };
@@ -124,7 +124,7 @@
   function slotsFor(date) {
     const out = [];
     const now = new Date();
-    for (let m = CONFIG.abre * 60; m < CONFIG.fecha * 60; m += CONFIG.intervaloMin) {
+    for (let m = CONFIG.abre * 60; m + CONFIG.intervaloMin <= CONFIG.fecha * 60; m += CONFIG.intervaloMin) {
       const h = Math.floor(m / 60), min = m % 60;
       const at = new Date(date.getFullYear(), date.getMonth(), date.getDate(), h, min);
       out.push({ label: `${pad(h)}:${pad(min)}`, taken: at <= now });
