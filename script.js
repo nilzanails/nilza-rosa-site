@@ -5,10 +5,10 @@
   const CONFIG = {
     whatsapp: '5511960732569',
     profissional: '',
-    abre: 9,             // PROVISÓRIO: confirmar horário de atendimento
-    fecha: 18,
-    intervaloMin: 60,
-    diasFechados: [0],   // PROVISÓRIO: 0 = domingo
+    abre: 7,             // segunda a sábado, das 7:00 às 19:30
+    fecha: 19.5,
+    intervaloMin: 30,
+    diasFechados: [0],   // 0 = domingo (sem atendimento)
     mesesAFrente: 2,
   };
 
