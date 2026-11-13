@@ -3,13 +3,8 @@
 
   /* ---------- Configuração do salão ---------- */
   const CONFIG = {
-    whatsapp: '5511960732569',
+    whatsapp: '5511952544413',
     profissional: '',
-    abre: 7,             // segunda a sábado, das 7:00 às 19:30
-    fecha: 19.5,
-    intervaloMin: 60,
-    diasFechados: [0],   // 0 = domingo (sem atendimento)
-    mesesAFrente: 2,
   };
 
   // Opções do seletor de agendamento
@@ -23,9 +18,9 @@
   const pad = n => String(n).padStart(2, '0');
   const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
 
-  const state = { service: null, date: null, time: null, view: null };
+  const state = { service: null };
 
-  /* ---------- Acordeões do agendamento ---------- */
+  /* ---------- Acordeão do agendamento ---------- */
   const toggle = $('#booking-toggle');
   const body = $('#booking-body');
   toggle.addEventListener('click', () => {
@@ -34,157 +29,38 @@
     body.hidden = open;
   });
 
-  function setPill(id, open) {
-    const pill = $('#pill-' + id);
-    $('.pill__btn', pill).setAttribute('aria-expanded', String(open));
-    $('#panel-' + id).hidden = !open;
-    // Só um campo aberto por vez
-    if (open) {
-      ['service', 'date'].filter(other => other !== id).forEach(other => {
-        $('.pill__btn', $('#pill-' + other)).setAttribute('aria-expanded', 'false');
-        $('#panel-' + other).hidden = true;
-      });
-    }
+  function setPill(open) {
+    $('.pill__btn', $('#pill-service')).setAttribute('aria-expanded', String(open));
+    $('#panel-service').hidden = !open;
   }
-  ['service', 'date'].forEach(id => {
-    $('.pill__btn', $('#pill-' + id)).addEventListener('click', () => {
-      setPill(id, $('#panel-' + id).hidden);
-    });
-  });
+  $('.pill__btn', $('#pill-service')).addEventListener('click', () => setPill($('#panel-service').hidden));
 
-  /* ---------- Serviços (seletor + grade) ---------- */
+  /* ---------- Escolha do serviço ---------- */
   const optList = $('#service-options');
   BOOK_OPTIONS.forEach(nome => {
     const li = document.createElement('li');
     li.innerHTML = '<button type="button" aria-pressed="false"></button>';
     const b = li.firstChild;
     b.textContent = nome;
-    b.addEventListener('click', () => chooseService(nome, true));
+    b.addEventListener('click', () => chooseService(nome));
     optList.appendChild(li);
   });
 
-  function chooseService(nome, advance) {
+  function chooseService(nome) {
     state.service = nome;
     $$('button', optList).forEach(b => b.setAttribute('aria-pressed', String(b.textContent === nome)));
     $('#label-service').textContent = nome;
     $('#pill-service').classList.add('is-set');
-    setPill('service', false);
-    if (advance && !state.date) setPill('date', true);
-    render();
+    setPill(false);
+    renderSummary();
   }
-
-  /* ---------- Calendário ---------- */
-  const today = new Date(); today.setHours(0, 0, 0, 0);
-  const firstMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-  const lastMonth = new Date(today.getFullYear(), today.getMonth() + CONFIG.mesesAFrente, 1);
-  state.view = new Date(firstMonth);
-
-  const fmtMonthName = new Intl.DateTimeFormat('pt-BR', { month: 'long' });
-  const fmtWeekday = new Intl.DateTimeFormat('pt-BR', { weekday: 'long' });
-  const sameDay = (a, b) => a && b && a.getTime() === b.getTime();
-
-  function renderCalendar() {
-    const v = state.view;
-    $('#cal-title').textContent = `${cap(fmtMonthName.format(v))} ${v.getFullYear()}`;
-    $('#cal-prev').disabled = v <= firstMonth;
-    $('#cal-next').disabled = v >= lastMonth;
-
-    const cal = $('#cal-grid');
-    cal.innerHTML = '';
-    const offset = v.getDay();
-    const days = new Date(v.getFullYear(), v.getMonth() + 1, 0).getDate();
-    for (let i = 0; i < offset; i++) {
-      cal.insertAdjacentHTML('beforeend', '<span class="cal__day is-empty"></span>');
-    }
-    for (let d = 1; d <= days; d++) {
-      const date = new Date(v.getFullYear(), v.getMonth(), d);
-      const b = document.createElement('button');
-      b.type = 'button';
-      b.className = 'cal__day';
-      b.textContent = d;
-      const closed = CONFIG.diasFechados.includes(date.getDay());
-      const past = date < today;
-      const noSlots = sameDay(date, today) && slotsFor(date).every(s => s.taken);
-      b.disabled = closed || past || noSlots;
-      b.setAttribute('aria-pressed', String(sameDay(date, state.date)));
-      if (closed) b.title = 'Sem atendimento neste dia';
-      b.addEventListener('click', () => {
-        state.date = date;
-        if (state.time && slotsFor(date).find(s => s.label === state.time)?.taken) state.time = null;
-        render();
-        $('#times').scrollTo({ left: 0 });
-      });
-      cal.appendChild(b);
-    }
-  }
-  $('#cal-prev').addEventListener('click', () => { state.view = new Date(state.view.getFullYear(), state.view.getMonth() - 1, 1); renderCalendar(); });
-  $('#cal-next').addEventListener('click', () => { state.view = new Date(state.view.getFullYear(), state.view.getMonth() + 1, 1); renderCalendar(); });
-
-  /* ---------- Horários ---------- */
-  function slotsFor(date) {
-    const out = [];
-    const now = new Date();
-    for (let m = CONFIG.abre * 60; m + CONFIG.intervaloMin <= CONFIG.fecha * 60; m += CONFIG.intervaloMin) {
-      const h = Math.floor(m / 60), min = m % 60;
-      const at = new Date(date.getFullYear(), date.getMonth(), date.getDate(), h, min);
-      out.push({ label: `${pad(h)}:${pad(min)}`, taken: at <= now });
-    }
-    return out;
-  }
-
-  function renderTimes() {
-    const track = $('#times');
-    track.innerHTML = '';
-    const hint = $('#times-hint');
-    // Sem dia escolhido, mostra a grade de horários desabilitada como referência
-    const ref = state.date || new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
-    hint.hidden = !!state.date;
-    hint.textContent = 'Escolha um dia para liberar os horários.';
-    slotsFor(ref).forEach(s => {
-      const b = document.createElement('button');
-      b.type = 'button';
-      b.className = 'time' + (state.date && s.taken ? ' is-past' : '');
-      b.textContent = s.label;
-      b.disabled = !state.date || s.taken;
-      b.setAttribute('aria-pressed', String(state.time === s.label));
-      b.addEventListener('click', () => { state.time = s.label; render(); });
-      track.appendChild(b);
-    });
-  }
-  const scrollTimes = dir => $('#times').scrollBy({ left: dir * 220, behavior: 'smooth' });
-  $('#times-prev').addEventListener('click', () => scrollTimes(-1));
-  $('#times-next').addEventListener('click', () => scrollTimes(1));
 
   /* ---------- Resumo e envio ---------- */
-  function humanTime(t) {
-    const [h, m] = t.split(':').map(Number);
-    return m ? `${h}h${pad(m)}` : `${h} horas`;
-  }
-
   function renderSummary() {
-    const set = (id, txt, ok) => {
-      const el = $(id);
-      el.textContent = txt;
-      el.parentElement.classList.toggle('is-set', ok);
-    };
-    set('#sum-service', state.service || 'Escolha o serviço', !!state.service);
-    set('#sum-date', state.date ? `dia ${state.date.getDate()} - ${cap(fmtWeekday.format(state.date))}` : 'Escolha o dia', !!state.date);
-    set('#sum-time', state.time ? `às ${humanTime(state.time)}` : 'Escolha o horário', !!state.time);
-
-    if (state.date) {
-      const label = $('#label-date');
-      label.textContent = state.time
-        ? `${pad(state.date.getDate())}/${pad(state.date.getMonth() + 1)} · ${state.time}`
-        : `${pad(state.date.getDate())}/${pad(state.date.getMonth() + 1)} · escolha o horário`;
-      $('#pill-date').classList.add('is-set');
-    }
-    $('#btn-send').disabled = !(state.service && state.date && state.time);
-  }
-
-  function render() {
-    renderCalendar();
-    renderTimes();
-    renderSummary();
+    const el = $('#sum-service');
+    el.textContent = state.service || 'Escolha o serviço';
+    el.parentElement.classList.toggle('is-set', !!state.service);
+    $('#btn-send').disabled = !state.service;
   }
 
   function whatsappUrl(text) {
@@ -192,22 +68,18 @@
   }
 
   $('#btn-send').addEventListener('click', () => {
-    const d = state.date;
-    const dataLonga = `${cap(fmtWeekday.format(d))}, ${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()}`;
     const msg = [
       'Olá! Gostaria de fazer um agendamento:',
       '',
       `Serviço: ${state.service}`,
-      `Data: ${dataLonga}`,
-      `Horário: ${state.time}`,
       '',
-      'Pode confirmar pra mim?',
+      'Quais dias e horários você tem disponíveis?',
     ].join('\n');
     window.open(whatsappUrl(msg), '_blank', 'noopener');
   });
 
   $('#btn-edit').addEventListener('click', () => {
-    setPill('service', true);
+    setPill(true);
     $('#pill-service').scrollIntoView({ behavior: 'smooth', block: 'center' });
   });
 
@@ -234,6 +106,116 @@
     updateGallery();
   });
   window.addEventListener('resize', updateGallery);
+
+
+  /* ---------- Visualizador: toque numa foto da galeria para ampliar ---------- */
+  {
+    const box = $('#lb'), img = $('#lb-img'), count = $('#lb-count');
+    let cur = 0, busy = false, startX = null, startY = null, dx = 0, dragging = false;
+    const big = i => 'img/grande/' + gItems[i].querySelector('img').getAttribute('src').split('/').pop();
+    const wrap = i => (i + gItems.length) % gItems.length;
+    const wait = ms => new Promise(r => setTimeout(r, ms));
+    const load = src => new Promise(res => { const im = new Image(); im.onload = im.onerror = () => res(); im.src = src; });
+    const preload = i => { const im = new Image(); im.src = big(wrap(i)); };
+    const setImg = i => {
+      cur = wrap(i);
+      img.src = big(cur);
+      img.alt = gItems[cur].querySelector('img').alt;
+      count.textContent = `${cur + 1} / ${gItems.length}`;
+      preload(cur + 1); preload(cur - 1);
+    };
+    const resetInline = () => { img.style.transition = ''; img.style.transform = ''; img.style.opacity = ''; };
+
+    // troca de foto: a atual sai deslizando, a nova entra do lado oposto (sem piscar)
+    async function go(dir) {            // dir: +1 próxima, -1 anterior
+      if (busy) return;
+      busy = true;
+      const from = dragging ? dx : 0;
+      img.style.transition = 'transform .2s ease-in, opacity .2s ease-in';
+      img.style.transform = `translateX(${-dir * 70}px)`;
+      img.style.opacity = '0';
+      const next = wrap(cur + dir);
+      await Promise.all([wait(200), load(big(next))]);
+      setImg(next);
+      img.style.transition = 'none';
+      img.style.transform = `translateX(${dir * 70}px)`;
+      img.getBoundingClientRect();      // força o recálculo antes de animar a entrada
+      img.style.transition = 'transform .32s cubic-bezier(.22, 1, .36, 1), opacity .32s ease-out';
+      img.style.transform = 'translateX(0)';
+      img.style.opacity = '1';
+      await wait(330);
+      busy = false;
+    }
+
+    const open = i => {
+      box.hidden = false;
+      document.body.classList.add('lb-open');
+      resetInline();
+      img.classList.remove('is-in');
+      setImg(i);
+      setTimeout(() => { box.classList.add('is-open'); img.classList.add('is-in'); }, 20);
+    };
+    const close = () => {
+      box.classList.remove('is-open');
+      img.classList.remove('is-in');
+      document.body.classList.remove('lb-open');
+      setTimeout(() => { box.hidden = true; img.removeAttribute('src'); resetInline(); }, 260);
+    };
+
+    gItems.forEach((f, i) => { f.style.cursor = 'zoom-in'; f.addEventListener('click', () => open(i)); });
+    $('#lb-close').addEventListener('click', close);
+    $('#lb-prev').addEventListener('click', e => { e.stopPropagation(); go(-1); });
+    $('#lb-next').addEventListener('click', e => { e.stopPropagation(); go(1); });
+    box.addEventListener('click', e => { if (e.target === box) close(); });
+    document.addEventListener('keydown', e => {
+      if (box.hidden) return;
+      if (e.key === 'Escape') close();
+      if (e.key === 'ArrowLeft') go(-1);
+      if (e.key === 'ArrowRight') go(1);
+    });
+
+    // arrastar com o dedo: a foto acompanha o toque
+    box.addEventListener('touchstart', e => {
+      if (busy) return;
+      startX = e.touches[0].clientX; startY = e.touches[0].clientY; dx = 0; dragging = false;
+    }, { passive: true });
+    box.addEventListener('touchmove', e => {
+      if (startX === null || busy) return;
+      const mx = e.touches[0].clientX - startX, my = e.touches[0].clientY - startY;
+      if (!dragging && Math.abs(mx) > 8 && Math.abs(mx) > Math.abs(my)) dragging = true;
+      if (!dragging) return;
+      dx = mx;
+      img.style.transition = 'none';
+      img.style.transform = `translateX(${dx}px)`;
+      img.style.opacity = String(Math.max(.35, 1 - Math.abs(dx) / 420));
+    }, { passive: true });
+    box.addEventListener('touchend', () => {
+      if (startX === null) return;
+      const moved = dx, was = dragging;
+      startX = null;
+      if (was && Math.abs(moved) > 60) { go(moved < 0 ? 1 : -1).then(() => { dragging = false; dx = 0; }); return; }
+      if (was) {                          // não passou do limite: volta suave ao lugar
+        img.style.transition = 'transform .28s cubic-bezier(.22, 1, .36, 1), opacity .28s ease-out';
+        img.style.transform = 'translateX(0)';
+        img.style.opacity = '1';
+      }
+      dragging = false; dx = 0;
+    }, { passive: true });
+  }
+
+
+  /* ---------- Zoom leve ao tocar nos serviços ---------- */
+  $$('.svc-wide, .svc-photo, .svc-mini').forEach(card => {
+    let t = 0;
+    const down = () => { clearTimeout(t); card.classList.add('is-press'); };
+    const up = () => { clearTimeout(t); t = setTimeout(() => card.classList.remove('is-press'), 180); };
+    card.addEventListener('pointerdown', down, { passive: true });
+    card.addEventListener('pointerup', up, { passive: true });
+    card.addEventListener('pointercancel', up, { passive: true });
+    card.addEventListener('pointerleave', up, { passive: true });
+    // toque rápido: garante o "pulso" mesmo que o dedo solte antes da animação
+    card.addEventListener('click', () => { down(); up(); });
+  });
 
   /* ---------- FAQ: só uma pergunta aberta por vez ---------- */
   const faq = $$('#faq details');
@@ -283,7 +265,7 @@
   }
 
   // Entrada suave dos blocos ao rolar
-  if (!reduceMotion && 'IntersectionObserver' in window) {
+  if ('IntersectionObserver' in window) {
     const targets = [
       ...$$('.section h2, .section__sub, .svc-wide, .svc-photo, .svc-mini, .map, .map__addr, .faq details, .gallery'),
     ];
@@ -314,7 +296,7 @@
     // visibilidade checada na hora (mais confiável que IntersectionObserver em qualquer celular)
     const onScreen = () => { const r = gTrack.getBoundingClientRect(); return r.bottom > 80 && r.top < innerHeight - 80; };
     setInterval(() => {
-      if (paused || document.hidden || !onScreen()) return;
+      if (paused || document.hidden || document.body.classList.contains('lb-open') || !onScreen()) return;
       const center = gTrack.scrollLeft + gTrack.clientWidth / 2;
       let idx = gItems.findIndex(f => f.offsetLeft + f.offsetWidth / 2 > center + 4);
       if (idx < 0) idx = 0;   // chegou na última: volta para a primeira
@@ -384,5 +366,5 @@
   // Links do rodapé
   $('#foot-wa').href = whatsappUrl('Olá! Gostaria de agendar um horário.');
 
-  render();
+  renderSummary();
 })();

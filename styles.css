@@ -718,7 +718,6 @@ h1, h2, h3, p { margin: 0; }
 
 /* quem reduz movimento no sistema: sem entrada, sem pulso e sem autoplay (o brilho orbital continua) */
 @media (prefers-reduced-motion: reduce) {
-  .reveal, .reveal.is-in { opacity: 1; animation: none; }
   .booking__toggle .dot, .btn--brown .dot--light, .btn--buy .dot--light, .btn--brown > .ico { animation: none !important; }
 }
 
@@ -1070,7 +1069,6 @@ body { font-size: 16px; }
 .hero__nail { width: 38px; height: 44px; }
 .hero__chev { width: 14px; height: 14px; opacity: .85; }
 @keyframes hero-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
-@media (prefers-reduced-motion: reduce) { .hero__scroll { animation: none; } }
 .hero__nail { width: 40px; height: auto; }
 
 /* ---------- SERVIÇOS (layout único) ---------- */
@@ -1206,7 +1204,6 @@ body { background: #000; }
   0%, 25%, 100% { box-shadow: 0 4px 14px rgba(0,0,0,.45), 0 0 12px rgba(200,204,210,.4); }
   45%, 80% { box-shadow: 0 4px 14px rgba(0,0,0,.45), 0 0 14px rgba(201,63,88,.55); }
 }
-@media (prefers-reduced-motion: reduce) { .menu-btn, .menu-btn::after, .menu-btn__bars i { animation: none; } }
 
 /* ---------- AJUSTES ---------- */
 .svc-grid--small { grid-template-columns: 1fr; gap: 12px; }
@@ -1229,4 +1226,66 @@ body { background: #000; }
   0%, 25%, 100% { border-color: rgba(220,224,230,.45); box-shadow: 0 6px 18px rgba(0,0,0,.28); }
   45%, 80% { border-color: rgba(255,120,145,.55); box-shadow: 0 6px 18px rgba(0,0,0,.28), 0 0 10px rgba(201,63,88,.3); }
 }
-@media (prefers-reduced-motion: reduce) { .menu-btn, .menu-btn::after, .menu-btn__bars i { animation: none; } }
+.summary li .ico { width: 22px; height: 22px; }
+
+/* ícone do rodapé: mesmo balanço do ícone da hero */
+.footer__icon { animation: hero-bob 2.4s ease-in-out infinite; }
+
+/* ---------- VISUALIZADOR DE FOTOS ---------- */
+.lb {
+  position: fixed; inset: 0; z-index: 100;
+  display: grid; place-items: center;
+  background: rgba(0,0,0,.94);
+  opacity: 0; transition: opacity .25s ease;
+}
+.lb[hidden] { display: none; }
+.lb.is-open { opacity: 1; }
+.lb__img {
+  max-width: 100vw; max-height: 84vh; max-height: 84svh; width: auto; height: auto;
+  object-fit: contain; border-radius: 10px;
+  transform: scale(.82); opacity: 0;
+  transition: transform .35s cubic-bezier(.22, 1, .36, 1), opacity .3s ease;
+}
+.lb__img.is-in { transform: scale(1); opacity: 1; }
+.lb__close, .lb__nav {
+  position: absolute; z-index: 2; display: grid; place-items: center;
+  width: 44px; height: 44px; border-radius: 50%;
+  color: #fff; background: rgba(255,255,255,.14);
+  border: 1px solid rgba(255,255,255,.28);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+}
+.lb__close { top: max(16px, env(safe-area-inset-top)); right: 16px; }
+.lb__nav { top: 50%; translate: 0 -50%; width: 40px; height: 40px; }
+.lb__nav--prev { left: 10px; }
+.lb__nav--next { right: 10px; }
+.lb__count { position: absolute; bottom: max(22px, env(safe-area-inset-bottom)); left: 0; right: 0; text-align: center; font-size: 13px; letter-spacing: .12em; color: rgba(255,255,255,.75); }
+body.lb-open { overflow: hidden; }
+.gallery figure { -webkit-tap-highlight-color: transparent; }
+
+/* Reposição e Remoção lado a lado */
+.svc-grid--small { grid-template-columns: 1fr 1fr; gap: 14px; }
+.svc-mini { display: flex; flex-direction: column; justify-content: space-between; gap: 10px; }
+.svc-mini h3 { line-height: 1.25; }
+.svc-mini p { margin-top: 0; }
+
+/* cards Reposição / Remoção: texto à esquerda, preço colado ao lado */
+.svc-mini { justify-content: flex-start; gap: 8px; }
+.svc-mini p { justify-content: flex-start; gap: 18px; font-size: 14px; white-space: nowrap; }
+.svc-mini { padding: 16px 13px 18px 16px; }
+.svc-mini p { font-size: 13px; gap: 10px; }
+@media (max-width: 374px) {
+  .svc-mini { padding: 14px 10px 16px 12px; }
+  .svc-mini p { font-size: 12px; gap: 6px; }
+}
+
+/* ---------- ZOOM LEVE AO TOCAR NOS SERVIÇOS ---------- */
+.svc-wide, .svc-photo, .svc-mini {
+  cursor: pointer; -webkit-tap-highlight-color: transparent;
+  transition: scale .28s cubic-bezier(.22, 1, .36, 1), border-color .28s ease, box-shadow .28s ease;
+}
+.svc-wide.is-press, .svc-photo.is-press, .svc-mini.is-press {
+  scale: 1.035; border-color: rgba(232,180,164,.55); box-shadow: 0 10px 26px rgba(0,0,0,.55);
+}
+@media (hover: hover) {
+  .svc-wide:hover, .svc-photo:hover, .svc-mini:hover { scale: 1.02; border-color: #3a3a3a; }
+}

@@ -10,11 +10,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32.png">
-  <link rel="icon" type="image/png" sizes="192x192" href="img/favicon-192.png">
-  <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32.png?v=2">
+  <link rel="icon" type="image/png" sizes="192x192" href="img/favicon-192.png?v=2">
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png?v=2">
   <link rel="preload" as="image" href="img/hero.webp">
-  <link rel="stylesheet" href="styles.css?v=24">
+  <link rel="stylesheet" href="styles.css?v=33">
 </head>
 <body>
 
@@ -24,6 +24,7 @@
   <symbol id="i-left" viewBox="0 0 24 24"><path d="m15 6-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
   <symbol id="i-clock" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></g></symbol>
   <symbol id="i-pin" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.5"/></g></symbol>
+  <symbol id="i-nail" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 21V10.5a5 5 0 0 1 10 0V21Z"/><path d="M9.3 9c0-1.6.7-3 1.9-3.4"/></g><path d="M20 2.5l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8Z" fill="currentColor"/></symbol>
   <symbol id="i-scissors" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2.6"/><circle cx="6" cy="18" r="2.6"/><path d="M8 7.6 20 18M8 16.4 20 6"/></g></symbol>
   <symbol id="i-calendar" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/></g></symbol>
   <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 2.8 2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8Z" fill="currentColor"/></symbol>
@@ -95,8 +96,8 @@
     </div>
 
     <div class="svc-grid svc-grid--small">
-      <article class="svc-mini"><h3>Reposição</h3><p><span>Unha caída (unidade)</span><strong>R$ 5,00</strong></p></article>
-      <article class="svc-mini"><h3>Remoção</h3><p><span>Unhas</span><strong>R$ 25,00</strong></p></article>
+      <article class="svc-mini"><h3>Reposição</h3><p><span>Unha caída uni.</span><strong>R$ 5,00</strong></p></article>
+      <article class="svc-mini"><h3>Remoção</h3><p><strong>R$ 25,00</strong></p></article>
     </div>
   </section>
 
@@ -121,41 +122,16 @@
         </div>
       </div>
 
-      <div class="pill" id="pill-date">
-        <button class="pill__btn" type="button" aria-expanded="false" aria-controls="panel-date">
-          <span class="pill__label" id="label-date">Data e horário</span>
-          <svg class="ico chev"><use href="#i-down"/></svg>
-        </button>
-        <div class="pill__panel pill__panel--light" id="panel-date" hidden>
-          <div class="cal__head">
-            <button type="button" class="cal__nav" id="cal-prev" aria-label="Mês anterior"><svg class="ico"><use href="#i-left"/></svg></button>
-            <strong id="cal-title">Setembro 2026</strong>
-            <button type="button" class="cal__nav" id="cal-next" aria-label="Próximo mês"><svg class="ico"><use href="#i-right"/></svg></button>
-          </div>
-          <div class="cal__week" aria-hidden="true"><span>D</span><span>S</span><span>T</span><span>Q</span><span>Q</span><span>S</span><span>S</span></div>
-          <div class="cal__grid" id="cal-grid"></div>
-
-          <div class="times">
-            <button type="button" class="times__nav" id="times-prev" aria-label="Horários anteriores"><svg class="ico"><use href="#i-left"/></svg></button>
-            <div class="times__track" id="times"></div>
-            <button type="button" class="times__nav" id="times-next" aria-label="Próximos horários"><svg class="ico"><use href="#i-right"/></svg></button>
-          </div>
-          <p class="times__hint" id="times-hint">Escolha um dia para ver os horários.</p>
-        </div>
-      </div>
-
       <div class="summary" id="summary">
         <h3>Seu agendamento é:</h3>
         <ul>
-          <li><svg class="ico"><use href="#i-scissors"/></svg><span id="sum-service">Escolha o serviço</span></li>
-          <li><svg class="ico"><use href="#i-calendar"/></svg><span id="sum-date">Escolha o dia</span></li>
-          <li><svg class="ico"><use href="#i-clock"/></svg><span id="sum-time">Escolha o horário</span></li>
+          <li><svg class="ico"><use href="#i-nail"/></svg><span id="sum-service">Escolha o serviço</span></li>
         </ul>
         <button class="btn btn--dark" type="button" id="btn-edit">Editar</button>
       </div>
 
       <div class="lumi lumi--send" data-variant="original" data-color="gold"><button class="btn btn--sage btn--send lumi__btn" type="button" id="btn-send" disabled>Enviar</button></div>
-      <p class="send-note">Você será levada ao WhatsApp com tudo preenchido. É só confirmar.</p>
+      <p class="send-note">Você será levada ao WhatsApp com o serviço escolhido.</p>
     </div>
   </section>
 
@@ -163,9 +139,18 @@
   <section class="gallery" id="galeria" aria-label="Galeria">
     <h2 class="gallery__title">Meus trabalhos</h2>
     <div class="gallery__track" id="gallery">
-      <figure><img src="img/galeria-1.webp" alt="Unhas alongadas em tom nude" loading="lazy" width="525" height="700"></figure>
-      <figure><img src="img/galeria-2.webp" alt="Unhas alongadas decoradas" loading="lazy" width="560" height="700"></figure>
-      <figure><img src="img/galeria-3.webp" alt="Unhas alongadas em tom laranja" loading="lazy" width="560" height="700"></figure>
+      <figure><img src="img/galeria-1.webp" alt="Trabalho de alongamento de unhas 1" loading="lazy" width="675" height="900"></figure>
+      <figure><img src="img/galeria-2.webp" alt="Trabalho de alongamento de unhas 2" loading="lazy" width="700" height="864"></figure>
+      <figure><img src="img/galeria-3.webp" alt="Trabalho de alongamento de unhas 3" loading="lazy" width="700" height="700"></figure>
+      <figure><img src="img/galeria-4.webp" alt="Trabalho de alongamento de unhas 4" loading="lazy" width="700" height="700"></figure>
+      <figure><img src="img/galeria-5.webp" alt="Trabalho de alongamento de unhas 5" loading="lazy" width="700" height="700"></figure>
+      <figure><img src="img/galeria-6.webp" alt="Trabalho de alongamento de unhas 6" loading="lazy" width="700" height="720"></figure>
+      <figure><img src="img/galeria-7.webp" alt="Trabalho de alongamento de unhas 7" loading="lazy" width="700" height="700"></figure>
+      <figure><img src="img/galeria-8.webp" alt="Trabalho de alongamento de unhas 8" loading="lazy" width="675" height="900"></figure>
+      <figure><img src="img/galeria-9.webp" alt="Trabalho de alongamento de unhas 9" loading="lazy" width="700" height="875"></figure>
+      <figure><img src="img/galeria-10.webp" alt="Trabalho de alongamento de unhas 10" loading="lazy" width="675" height="900"></figure>
+      <figure><img src="img/galeria-11.webp" alt="Trabalho de alongamento de unhas 11" loading="lazy" width="700" height="870"></figure>
+      <figure><img src="img/galeria-12.webp" alt="Trabalho de alongamento de unhas 12" loading="lazy" width="681" height="900"></figure>
     </div>
     <div class="dots" id="gallery-dots" aria-hidden="true"></div>
   </section>
@@ -183,7 +168,7 @@
   <section class="section" id="duvidas">
     <h2 class="faq-title">Ficou com alguma dúvida?</h2>
     <div class="faq" id="faq">
-      <details class="lumi" data-variant="original" data-color="gold"><summary>01. Como faço meu agendamento?</summary><p>Escolha o serviço, o dia e o horário na seção Agendamento e toque em Enviar. Você será levada ao WhatsApp com tudo preenchido e eu confirmo o seu horário.</p></details>
+      <details class="lumi" data-variant="original" data-color="gold"><summary>01. Como faço meu agendamento?</summary><p>Escolha o serviço na seção Agendamento e toque em Enviar. Você será levada ao WhatsApp com o serviço escolhido, e combinamos o dia e o horário por lá.</p></details>
       <details class="lumi" data-variant="original" data-color="gold"><summary>02. Qual a diferença entre colocação e manutenção?</summary><p>A colocação é o alongamento feito do zero. A manutenção é o retoque do alongamento já colocado, e por isso tem valor menor.</p></details>
       <details class="lumi" data-variant="original" data-color="gold"><summary>03. Uma unha caiu, o que eu faço?</summary><p>Faço a reposição da unha caída por R$ 5,00 cada. É só escolher esse serviço no agendamento.</p></details>
       <details class="lumi" data-variant="original" data-color="gold"><summary>04. Você faz decoração nas unhas?</summary><p>No momento faço decorações mais básicas. Também trabalho com cutilagem e esmaltação simples.</p></details>
@@ -204,6 +189,17 @@
   </footer>
 </main>
 
-<script src="script.js?v=9"></script>
+<!-- VISUALIZADOR DE FOTOS (galeria) -->
+<div class="lb" id="lb" hidden aria-modal="true" role="dialog" aria-label="Foto ampliada">
+  <button type="button" class="lb__close" id="lb-close" aria-label="Fechar">
+    <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+  </button>
+  <button type="button" class="lb__nav lb__nav--prev" id="lb-prev" aria-label="Foto anterior"><svg class="ico"><use href="#i-left"/></svg></button>
+  <img class="lb__img" id="lb-img" alt="">
+  <button type="button" class="lb__nav lb__nav--next" id="lb-next" aria-label="Próxima foto"><svg class="ico"><use href="#i-right"/></svg></button>
+  <p class="lb__count" id="lb-count"></p>
+</div>
+
+<script src="script.js?v=15"></script>
 </body>
 </html>
