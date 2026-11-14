@@ -365,6 +365,7 @@
 
   // Links do rodapé
   $('#foot-wa').href = whatsappUrl('Olá! Gostaria de agendar um horário.');
+  $('#fab-wa').href = whatsappUrl('Olá! Vim pelo site e gostaria de atendimento.');
 
   renderSummary();
 })();

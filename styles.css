@@ -1289,3 +1289,10 @@ body.lb-open { overflow: hidden; }
 @media (hover: hover) {
   .svc-wide:hover, .svc-photo:hover, .svc-mini:hover { scale: 1.02; border-color: #3a3a3a; }
 }
+
+/* ---------- BOTÕES FLUTUANTES (WhatsApp + Instagram) ---------- */
+.fab { position: fixed; right: 18px; bottom: calc(18px + env(safe-area-inset-bottom)); z-index: 30; width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center; background: #25D366; color: #fff; box-shadow: 0 8px 24px rgba(0,0,0,.55); -webkit-tap-highlight-color: transparent; transition: transform .3s cubic-bezier(.23,1,.32,1), filter .3s; }
+.fab-ig { bottom: calc(86px + env(safe-area-inset-bottom)); background: radial-gradient(circle at 30% 107%, #fdf497 0, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%); }
+.fab:active { transform: scale(.94); }
+@media (hover: hover) { .fab:hover { transform: translateY(-4px) scale(1.08); filter: brightness(1.08); } }
+body.lb-open .fab { display: none; }
