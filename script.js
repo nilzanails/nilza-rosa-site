@@ -94,12 +94,13 @@
     gItems.forEach((f, i) => {
       const mid = f.offsetLeft + f.offsetWidth / 2;
       const off = Math.max(-1, Math.min(1, (mid - c) / f.offsetWidth));
-      f.style.transform = `scale(${1 - Math.abs(off) * .16})`;
+      f.style.transform = `translate3d(0,0,0) scale(${(1 - Math.abs(off) * .16).toFixed(3)})`;
       if (Math.abs(mid - c) < bestD) { bestD = Math.abs(mid - c); best = i; }
     });
     $$('i', dots).forEach((d, i) => d.classList.toggle('is-on', i === best));
   }
-  gTrack.addEventListener('scroll', () => requestAnimationFrame(updateGallery), { passive: true });
+  let gTick = false;
+  gTrack.addEventListener('scroll', () => { if (!gTick) { gTick = true; requestAnimationFrame(() => { gTick = false; updateGallery(); }); } }, { passive: true });
   window.addEventListener('load', () => {
     const second = gItems[1];
     gTrack.scrollLeft = second.offsetLeft - (gTrack.clientWidth - second.offsetWidth) / 2;

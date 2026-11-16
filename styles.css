@@ -1296,3 +1296,8 @@ body.lb-open { overflow: hidden; }
 .fab:active { transform: scale(.94); }
 @media (hover: hover) { .fab:hover { transform: translateY(-4px) scale(1.08); filter: brightness(1.08); } }
 body.lb-open .fab { display: none; }
+
+/* ---------- GALERIA: rolagem sem tremor ---------- */
+.gallery figure { transition: none; will-change: transform; backface-visibility: hidden; -webkit-backface-visibility: hidden; transform: translate3d(0,0,0); isolation: isolate; }
+.gallery img { display: block; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.gallery__track { -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; }
