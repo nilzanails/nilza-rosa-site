@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://nilzanaildesigner.com.br/sitemap.xml
